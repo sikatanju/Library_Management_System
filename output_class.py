@@ -20,5 +20,7 @@ class Output:
                 print("ISBN number      : ", book[value])
             elif value == 'publishing_year':
                 print("Publishing Year  : ", book[value])
+            elif value == 'quantity':
+                print("Quantity : ", book[value])
             else:
                 print("Publishing House : ", book[value])

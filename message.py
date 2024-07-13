@@ -3,7 +3,7 @@
 class Message:
     def __init__(self):
         self.messages = [
-            "\nPress `q` anytime to exit the program.",
+            "Press `q` anytime to exit the program.",
             "Press `1` to add a book to the library.",
             "Press `2` to show all the book in the library.",
             "Press `3` to search for a book."

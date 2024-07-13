@@ -1,19 +1,24 @@
 # This class is to store all the information of our program.
 # from book import Book
-import json
 from output_class import Output
-
+from input_class import TakeInput
 
 class Inventory:
     def __init__(self):
-        self.book_list = []
+        self.take_input = TakeInput()
+        self.book_list = self.take_input.load_all_books()
         self.output_obj = Output()
 
     def save_a_book(self, book_obj):
         self.book_list.append(book_obj)
+        with open('data/book_list.csv', 'w+t') as file:
+            for book in self.book_list:
+                strr = self.get_string_book(book)
+                file.write(strr)
+
 
     def print_all_books(self):
-        print("Printing all the book details: ")
+        print("\nPrinting all the book details: ")
         self.print_book(self.book_list)
 
     def search_a_book(self, book_key):
@@ -59,10 +64,21 @@ class Inventory:
         self.print_book(temp_book_list)
 
     def print_book(self, book_list):
-        print("\n--------------------------------")
+        print("--------------------------------")
         i = 1
         for book in book_list:
             print(f"Book no.{i} :")
             self.output_obj.output_book_details(book)
             i += 1
-            print("--------------------------------\n")
+            print("--------------------------------")
+
+        print('\n')
+
+    def get_string_book(self, book):
+        strr = f"{book['book_name']},{book['isbn_number']},{book['publishing_year']},{book['publishing_house']},{book['quantity']},"
+        for temp_author in book['author']:
+            strr += f"{temp_author},"
+
+        strr += "\n"
+        return strr
+
