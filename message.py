@@ -3,10 +3,10 @@
 class Message:
     def __init__(self):
         self.messages = [
-            "\n### Welcome to Library Management System.",
-            "Press `q` anytime to exit the program.",
+            "\nPress `q` anytime to exit the program.",
             "Press `1` to add a book to the library.",
-            "Press `2` to show all the book in the library."
+            "Press `2` to show all the book in the library.",
+            "Press `3` to search for a book."
         ]
         self.author_msg = 'In case of one author, after entering the author\'s name and press `q`\nIf there are more than one author, enter their name one by one, then press `q` to finish'
 

@@ -11,8 +11,8 @@ class Book:
 
     def print_book(self):
         print("Book name: ", self.book_name)
+
         print("Author(s): ", end='')
-        # i = 1
         author_len = len(self.author)
         for i in range(author_len):
             if i == author_len-1:
