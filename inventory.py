@@ -1,7 +1,8 @@
 # This class is to store all the information of our program.
-# from book import Book
+
 from output_class import Output
 from input_class import TakeInput
+
 
 class Inventory:
     def __init__(self):
@@ -11,13 +12,17 @@ class Inventory:
 
     def save_a_book(self, book_obj):
         self.book_list.append(book_obj)
-        with open('data/book_list.csv', 'w+t') as file:
-            for book in self.book_list:
-                strr = self.get_string_book(book)
-                file.write(strr)
+        with open('data/book_list.csv', 'a') as file:
+            strr = self.get_formatted_book(book_obj)
+            file.write(strr)
+
 
 
     def print_all_books(self):
+        if len(self.book_list) == 0:
+            print("\nThere are no books in the library right now.\n")
+            return
+
         print("\nPrinting all the book details: ")
         self.print_book(self.book_list)
 
@@ -74,11 +79,12 @@ class Inventory:
 
         print('\n')
 
-    def get_string_book(self, book):
-        strr = f"{book['book_name']},{book['isbn_number']},{book['publishing_year']},{book['publishing_house']},{book['quantity']},"
+    def get_formatted_book(self, book):
+        strr = f"{book['book_name']},q,"
         for temp_author in book['author']:
             strr += f"{temp_author},"
 
+        strr += 'q,'
+        strr += f"{book['isbn_number']},{book['publishing_year']},{book['publishing_house']},{book['quantity']}"
         strr += "\n"
         return strr
-

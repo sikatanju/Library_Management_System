@@ -1,6 +1,6 @@
 # ** Main program to run the `Library Management System`
 from message import Message
-# from book import Book
+from output_class import Output
 from input_class import TakeInput
 from inventory import Inventory
 
@@ -9,19 +9,16 @@ class LibraryManagementSystem:
 
     def __init__(self):
         self.message_obj = Message()
+        self.output_obj = Output()
         self.take_input_obj = TakeInput()
         self.inventory = Inventory()
 
     def run_program(self):
         print("\n### Welcome to Library Management System.")
         while True:
-            self.message_obj.print_messages()
-            msg: str = input("Enter the number: ")
-            if msg == "q":
-                print("Program Exiting...")
-                break
+            self.output_obj.print_messages(self.message_obj.messages)
             try:
-                msg = int(msg)
+                msg: int = int(input("Enter the number: "))
                 if msg == 1:
                     book_obj = self.take_input_obj.add_a_book()
                     self.inventory.save_a_book(book_obj)
@@ -29,10 +26,12 @@ class LibraryManagementSystem:
                     self.inventory.print_all_books()
                 elif msg == 3:
                     self.inventory.search_a_book(input("Enter the book name or ISBN number: "))
+                elif msg == 0:
+                    break
                 else:
                     print("Please enter a valid number.")
             except ValueError:
-                print("Input is invalid, enter a number or 'q' to exit.")
+                print("\nInput is invalid, enter a valid number.\n")
 
 
 if __name__ == '__main__':

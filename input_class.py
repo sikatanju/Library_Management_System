@@ -1,18 +1,20 @@
 # This class is to take input from the user
-from book import Book
+# from book import Book
 from message import Message
-
+from output_class import Output
 
 class TakeInput:
     def __init__(self):
         self.message = Message()
+        self.output_obj = Output()
 
     def add_a_book(self):
         print("Please enter the details of the book.")
         book_details = {}
         book_details['book_name'] = input("1. Please enter the name of the book : ")
         authors = []
-        self.message.print_author_msg()
+        # self.message.print_author_msg()
+        self.output_obj.print_a_message(self.message.author_msg)
         while True:
             msg: str = input("Enter author's name (press 'q' to stop): ")
             if msg == "q":
@@ -30,20 +32,31 @@ class TakeInput:
 
     def load_all_books(self):
         book_list = []
-        with open('data/book_list.csv', 'r+') as load_file:
+        with open('data/book_list.csv', 'r') as load_file:
             for line in load_file.readlines():
                 temp_book = {}
                 split_line = line.strip().split(',')
-                temp_book['book_name'] = split_line[0]
+                index = 0
+                temp_book['book_name'] = ""
+                while split_line[index] != 'q':
+                    temp_book['book_name'] += split_line[index]
+                    index += 1
+
+                index += 1
                 temp_book['author'] = []
+                while split_line[index] != 'q':
+                    temp_book['author'].append(split_line[index])
+                    index += 1
 
-                for i in range(5, len(split_line)-1):
-                    temp_book['author'].append(split_line[i])
+                index += 1
+                temp_book['isbn_number'] = split_line[index]
+                index += 1
+                temp_book['publishing_year'] = split_line[index]
+                index += 1
+                temp_book['publishing_house'] = split_line[index]
+                index += 1
+                temp_book['quantity'] = split_line[index]
 
-                temp_book['isbn_number'] = split_line[1]
-                temp_book['publishing_year'] = split_line[2]
-                temp_book['publishing_house'] = split_line[3]
-                temp_book['quantity'] = split_line[4]
                 book_list.append(temp_book)
 
         return book_list
