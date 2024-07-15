@@ -3,6 +3,7 @@
 from message import Message
 from output_class import Output
 
+
 class TakeInput:
     def __init__(self):
         self.message = Message()
@@ -60,3 +61,11 @@ class TakeInput:
                 book_list.append(temp_book)
 
         return book_list
+
+    def get_contact_details(self):
+        contact = {}
+        print("Enter contact details: ")
+        contact['full_name'] = input("Enter full name: ")
+        contact['age'] = input("Enter the age: ")
+        contact['email'] = input("Enter email: ")
+        return contact

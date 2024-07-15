@@ -25,7 +25,11 @@ class LibraryManagementSystem:
                 elif msg == 2:
                     self.inventory.print_all_books()
                 elif msg == 3:
-                    self.inventory.search_a_book(input("Enter the book name or ISBN number: "))
+                    self.inventory.search_book(input("Enter the book name or ISBN number: "))
+                elif msg == 4:
+                    self.inventory.remove_a_book(input("Enter the name of the book, author name or isbn number: "))
+                elif msg == 5:
+                    self.inventory.lend_a_book()
                 elif msg == 0:
                     break
                 else:

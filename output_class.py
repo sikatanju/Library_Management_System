@@ -11,7 +11,6 @@ class Output:
     def print_a_message(self, message):
         print(message)
 
-
     def output_book_details(self, book):
         for value in book:
             if value == 'book_name':
