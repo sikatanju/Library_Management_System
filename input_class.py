@@ -14,7 +14,6 @@ class TakeInput:
         book_details = {}
         book_details['book_name'] = input("1. Please enter the name of the book : ")
         authors = []
-        # self.message.print_author_msg()
         self.output_obj.print_a_message(self.message.author_msg)
         while True:
             msg: str = input("Enter author's name (press 'q' to stop): ")
@@ -24,14 +23,25 @@ class TakeInput:
                 authors.append(msg)
 
         book_details['author'] = authors
-        book_details['isbn_number'] = input("4. Enter the isbn number of the book: ")
-        book_details['publishing_year'] = input("3. Enter the publishing year: ")
-        book_details['publishing_house'] = input("5. Enter the name of the publishing house: ")
-        book_details['quantity'] = input("6. Enter the quantity of the book: ")
+        book_details['isbn_number'] = input("3. Enter the isbn number of the book: ")
+        book_details['publishing_year'] = input("4. Enter the publishing year: ")
+        while True:
+            try:
+                book_details['price'] = float(input("5. Enter the price of the book: "))
+                break
+            except ValueError:
+                print("Book price should be a floating number")
+        book_details['publishing_house'] = input("6. Enter the name of the publishing house: ")
+        while True:
+            try:
+                book_details['quantity'] = int(input("7. Enter the quantity of the book: "))
+                break
+            except ValueError:
+                print("The quantity of the book should be a number.")
 
         return book_details
 
-    def load_all_books(self):
+    def load_book_list(self):
         book_list = []
         with open('data/book_list.csv', 'r') as load_file:
             for line in load_file.readlines():
@@ -54,18 +64,47 @@ class TakeInput:
                 index += 1
                 temp_book['publishing_year'] = split_line[index]
                 index += 1
+                temp_book['price'] = float(split_line[index])
+                index += 1
                 temp_book['publishing_house'] = split_line[index]
                 index += 1
-                temp_book['quantity'] = split_line[index]
+                temp_book['quantity'] = int(split_line[index])
 
                 book_list.append(temp_book)
 
         return book_list
 
+    def load_lent_list(self):
+        lent_list = []
+        with open('data/lent_list.csv', 'r') as lent_file:
+            for line in lent_file.readlines():
+                temp_lent = {}
+                split_line = line.strip().split(',')
+                index = 0
+                temp_lent['book_name'] = ""
+                while split_line[index] != 'q':
+                    temp_lent['book_name'] += split_line[index]
+                    index += 1
+
+                index += 1
+                temp_lent['author'] = []
+                while split_line[index] != 'q':
+                    temp_lent['author'].append(split_line[index])
+                    index += 1
+
+                index += 1
+                temp_lent['isbn_number'] = split_line[index]
+                index += 1
+                temp_lent['contact_name'] = split_line[index]
+                index += 1
+                temp_lent['contact_email'] = split_line[index]
+                lent_list.append(temp_lent)
+
+        return lent_list
+
     def get_contact_details(self):
         contact = {}
         print("Enter contact details: ")
-        contact['full_name'] = input("Enter full name: ")
-        contact['age'] = input("Enter the age: ")
-        contact['email'] = input("Enter email: ")
+        contact['contact_name'] = input("Enter full name: ")
+        contact['contact_email'] = input("Enter contact email: ")
         return contact
