@@ -32,6 +32,10 @@ class LibraryManagementSystem:
                     self.inventory.lent_a_book()
                 elif msg == 6:
                     self.inventory.print_all_lent_list()
+                elif msg == 7:
+                    self.inventory.return_lent_book()
+                elif msg == 8:
+                    self.inventory.print_all_returned_lent_list()
                 elif msg == 0:
                     break
                 else:

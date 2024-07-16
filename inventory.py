@@ -12,6 +12,7 @@ class Inventory:
         self.message_obj = Message()
         self.book_list = self.take_input.load_book_list()
         self.lent_list = self.take_input.load_lent_list()
+        self.returned_lent_list = self.take_input.lead_returned_lent_list()
 
     def save_a_book(self, book_obj):
         self.book_list.append(book_obj)
@@ -42,6 +43,14 @@ class Inventory:
             return
 
         print("\nPrinting lent list with contact details: ")
+        self._print_lent_list(self.lent_list)
+
+    def print_all_returned_lent_list(self):
+        if len(self.returned_lent_list) == 0:
+            print("\nCurrently, the lent list is empty. :(\n")
+            return
+
+        print("\nPrinting returned lent book list with contact details: ")
         self._print_lent_list(self.lent_list)
 
     def _print_lent_list(self, lent_list):
@@ -102,21 +111,7 @@ class Inventory:
                             break
                     # Similarly, even a part of the book's name is give, we'll search for that book.
                     elif value == 'book_name':
-                        if book_key == book[value].lower():
-                            temp_book_list.append(book)
-                            break
-                        else:
-                            check = False
-                            splitted_book_name = book[value].split()
-                            for split_book_name in splitted_book_name:
-                                if book_key == split_book_name.lower():
-                                    temp_book_list.append(book)
-                                    check = True
-                                    break
-                        if check:
-                            break
-                    else:
-                        if book_key == book[value]:
+                        if self._search_by_split_book_name(book[value], book_key):
                             temp_book_list.append(book)
                             break
 
@@ -132,7 +127,7 @@ class Inventory:
         print("\nMatched book: ")
         while True:
             try:
-                self.print_book(list_of_books)
+                self._print_book_list(list_of_books)
                 book_no = int(input("Enter the book no. to remove the book: "))
                 if book_no > len(list_of_books) or book_no < 1:
                     print("Enter a valid number from the book list.")
@@ -151,10 +146,13 @@ class Inventory:
         print("\nLent a book:\n-----------------\n")
         while True:
             try:
-
                 option = int(input(self.message_obj.lent_message))
                 if option == 1:
                     temp_book_list = self._search_book(input("\nEnter book name, author name or isbn to search books: "))
+                    if len(temp_book_list) < 1:
+                        print("There are no books available, please try again.")
+                        continue
+
                     print("All the matching books: ")
                     self._print_book_list(temp_book_list)
                     check = self._handle_lent_book(temp_book_list)
@@ -237,3 +235,124 @@ class Inventory:
         strr += 'q,'
         strr += f"{lent['isbn_number']},{lent['contact_name']},{lent['contact_email']}\n"
         return strr
+
+    def _search_by_split_book_name(self, book_name, key):
+        if key == book_name.lower():
+            return True
+        else:
+            check = False
+            splitted_book_name = book_name.split()
+            for split_book_name in splitted_book_name:
+                if key == split_book_name.lower():
+                    return True
+
+        return False
+
+    def _search_lent_book(self, lent_key):
+        temp_lent_list = []
+        lent_key = lent_key.strip().lower()
+
+        for temp in self.lent_list:
+            for value in temp:
+                if value == 'book_name':
+                    if self._search_by_split_book_name(temp[value], lent_key):
+                        temp_lent_list.append(temp)
+                        break
+
+                elif value == 'contact_name':
+                    if lent_key == temp[value].lower():
+                        temp_lent_list.append(temp)
+                        break
+                    else:
+                        split_name = temp[value].split()
+                        check = False
+                        for temp_split in split_name:
+                            if lent_key == temp_split.lower():
+                                temp_lent_list.append(temp)
+                                check = True
+                                break
+
+                        if check:
+                            break
+                elif value == 'contact_email':
+                    if lent_key == temp[value]:
+                        temp_lent_list.append(temp)
+                        break
+
+        return temp_lent_list
+
+    def return_lent_book(self):
+        lent_book_list = []
+        while True:
+            lent_key = input("Enter contact name or contact email to see which books you had lent (press 'q' to cancel) : ")
+            lent_book_list = self._search_lent_book(lent_key)
+            if lent_key == 'q':
+                return
+            if len(lent_book_list) < 1:
+                print("Sorry, there are no matching name or email. Please try again !")
+            else:
+                break
+
+        lent_list_len = len(lent_book_list)
+        while True:
+            self._print_lent_list(lent_book_list)
+            try:
+                lent_no = int(input("Enter the lent no. from above list to select which book to return: "))
+                if lent_no < 1 or lent_no > lent_list_len:
+                    print("Enter a valid lent no. from the list")
+                else:
+                    self._add_returned_lent_book(lent_book_list[lent_no-1])
+                    break
+            except ValueError:
+                print("Please enter a valid lent no. from the list !!!")
+
+    def _add_returned_lent_book(self, lent_no):
+        self.returned_lent_list.append(lent_no)
+        isbn_num = lent_no['isbn_number']
+        # for i in range(len(self.book_list)):
+        #     if self.book_list[i]['isbn_number'] == isbn_num:
+        #         quantity = self.book_list[i]['quantity']
+        #         # print(quantity)
+        #         self.book_list[i]['quantity'] = int(quantity+1)
+        for book in self.book_list:
+            if book['isbn_number'] == isbn_num:
+                quantity = book['quantity']
+                del book['quantity']
+                book['quantity'] = quantity+1
+
+        self._update_book_list()
+        self.lent_list.remove(lent_no)
+        self._update_lent_list()
+        self._update_returned_lent_list()
+
+    def _update_returned_lent_list(self):
+        with open('data/returned_lent_book_list.csv', 'w+t') as returned_file:
+            for return_lent in self.returned_lent_list:
+                return_lent_csv = self.get_formatted_lent_info(return_lent)
+                returned_file.write(return_lent_csv)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

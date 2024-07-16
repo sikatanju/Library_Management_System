@@ -75,8 +75,14 @@ class TakeInput:
         return book_list
 
     def load_lent_list(self):
+        return self._load_lent_list('data/lent_list.csv')
+
+    def lead_returned_lent_list(self):
+        return self._load_lent_list('data/returned_lent_book_list.csv')
+
+    def _load_lent_list(self, data_path):
         lent_list = []
-        with open('data/lent_list.csv', 'r') as lent_file:
+        with open(data_path, 'r') as lent_file:
             for line in lent_file.readlines():
                 temp_lent = {}
                 split_line = line.strip().split(',')

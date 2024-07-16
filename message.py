@@ -9,6 +9,8 @@ class Message:
             "Press `4` to remove a book.",
             "Press `5` to lend a book.",
             "Press `6` to print all lent books.",
+            "Press `7` to return a lent book.",
+            "Press `8` to print all returned lent book.",
             "Press `0` to exit the program."
         ]
         self.author_msg = 'In case of one author, after entering the author\'s name and press `q`\nIf there are more than one author, enter their name one by one, then press `q` to finish'
