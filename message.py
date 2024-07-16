@@ -16,3 +16,6 @@ class Message:
         ]
         self.author_msg = 'In case of one author, after entering the author\'s name and press `q`\nIf there are more than one author, enter their name one by one, then press `q` to finish'
         self.lent_message = "Press `1` to search for a book.\nPress `2` to show all books.\nPress `3` to cancel.\nEnter the number: "
+
+    def get_main_messages(self):
+        return self.messages

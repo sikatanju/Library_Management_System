@@ -139,11 +139,17 @@ class Inventory:
         return False
 
     def remove_a_book(self, book_key):
-        list_of_books = self._search_book_by_author(book_key)
-
-        if len(list_of_books) == 0:
-            print("\nThere are no matching books. :(\n")
-            return
+        while True:
+            list_of_books = self._search_book_by_book_name_isbn(book_key)
+            if book_key == 'q':
+                return
+            if len(list_of_books) == 0:
+                list_of_books = self._search_book_by_book_name_isbn(book_key)
+            if len(list_of_books) == 0:
+                print("\nThere are no matching books. :(\nPlease try again.")
+                book_key = input("Enter the book title, author or isbn to search and remove the book (press 'q' to cancel) : ")
+            else:
+                break
 
         print("\nMatched book: ")
         while True:

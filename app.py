@@ -17,9 +17,9 @@ class LibraryManagementSystem:
     def run_program(self):
         print("\n### Welcome to Library Management System.")
         while True:
-            self.output_obj.print_messages(self.message_obj.messages)
+            self.output_obj.print_messages(self.message_obj.get_main_messages())
             try:
-                msg: int = int(input("Enter the number: "))
+                msg =  int(input("Enter the number: "))
                 if msg == 1:
                     book_obj = self.take_input_obj.add_a_book()
                     self.inventory.save_a_book(book_obj)
@@ -46,7 +46,7 @@ class LibraryManagementSystem:
             except ValueError:
                 print("\nInput is invalid, enter a valid number.\n")
 
-
+# * Learned this bit for Python Crash course book.
 if __name__ == '__main__':
     lms = LibraryManagementSystem()
     lms.run_program()
