@@ -1,5 +1,5 @@
 # This class is to take input from the user
-# from book import Book
+
 from message import Message
 from output_class import Output
 

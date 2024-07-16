@@ -48,6 +48,6 @@ class Output:
             else:
                 print(f'{lent['author'][i]},', end='')
 
-        print("ISBN number      : ", lent['isbn_number'])
+        # print("ISBN number      : ", lent['isbn_number'])
         print("Contact Name     : ", lent['contact_name'])
         print("Contact Email    : ", lent['contact_email'])

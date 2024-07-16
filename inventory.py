@@ -1,4 +1,4 @@
-# This class is to store all the information of our program.
+# This class is to initialize and store all the information of our program.
 
 from output_class import Output
 from input_class import TakeInput
@@ -51,21 +51,21 @@ class Inventory:
             return
 
         print("\nPrinting returned lent book list with contact details: ")
-        self._print_lent_list(self.lent_list)
+        self._print_lent_list(self.returned_lent_list)
 
     def _print_lent_list(self, lent_list):
         print("--------------------------------")
         i = 1
         for lent in lent_list:
-            print(f"Lent no.{i} :")
+            print(f"No.{i} :")
             self.output_obj.print_lent_details(lent)
             i += 1
             print("--------------------------------")
 
         print("\n")
 
-    def search_book(self, book_key):
-        temp_book_list = self._search_book(book_key)
+    def search_book_by_book_name_isbn(self, book_key):
+        temp_book_list = self._search_book_by_book_name_isbn(book_key)
 
         if len(temp_book_list) == 0:
             print("There are no matching books. :(")
@@ -74,7 +74,44 @@ class Inventory:
         print("\nList of matching books: ")
         self._print_book_list(temp_book_list)
 
-    def _search_book(self, book_key):
+    def search_book_by_author(self, author_name):
+        temp_book_list = self._search_book_by_author(author_name)
+
+        if len(temp_book_list) == 0:
+            print("There are no matching books. :(")
+            return
+
+        print("\nList of matching books: ")
+        self._print_book_list(temp_book_list)
+
+    def _search_book_by_author(self, author_name):
+        temp_book_list = []
+        check = False
+        author_name = author_name.strip().lower()
+        for book in self.book_list:
+            for temp_author in book['author']:
+                if author_name == temp_author.lower():
+                    temp_book_list.append(book)
+                    check = True
+                    break
+                else:
+                    temp_check = False
+                    split_author_name = temp_author.split()
+                    for temp_short_author in split_author_name:
+                        if temp_short_author.lower() == author_name:
+                            temp_book_list.append(book)
+                            check = True
+                            temp_check = True
+                            break
+
+                    if temp_check:
+                        break
+                if check:
+                    break
+
+        return temp_book_list
+
+    def _search_book_by_book_name_isbn(self, book_key):
         temp_book_list = []
         book_key = book_key.strip()
         # * If searched with isbn number, then look for that specific book only, since isbn number is unique.
@@ -83,42 +120,26 @@ class Inventory:
                 if book['isbn_number'] == book_key:
                     temp_book_list.append(book)
         else:
-            book_key = book_key.lower()
             for book in self.book_list:
-                for value in book:
-                    # If only a part of the author's name is given as input, we'll search for that book.
-                    if value == 'author':
-                        check = False
-                        for temp_author in book[value]:
-                            if book_key == temp_author.lower():
-                                temp_book_list.append(book)
-                                check = True
-                                break
-                            else:
-                                temp_check = False
-                                author_name = temp_author.split()
-                                for temp_short_author in author_name:
-                                    if temp_short_author.lower() == book_key:
-                                        temp_book_list.append(book)
-                                        check = True
-                                        temp_check = True
-                                        break
-
-                                if temp_check:
-                                    break
-
-                        if check:
-                            break
-                    # Similarly, even a part of the book's name is give, we'll search for that book.
-                    elif value == 'book_name':
-                        if self._search_by_split_book_name(book[value], book_key):
-                            temp_book_list.append(book)
-                            break
+                if self._search_by_split_book_name(book['book_name'], book_key):
+                    temp_book_list.append(book)
+                    break
 
         return temp_book_list
 
+    def _search_by_split_book_name(self, book_name, key):
+        if key == book_name.lower():
+            return True
+        else:
+            splitted_book_name = book_name.split()
+            for split_book_name in splitted_book_name:
+                if key == split_book_name.lower():
+                    return True
+
+        return False
+
     def remove_a_book(self, book_key):
-        list_of_books = self._search_book(book_key)
+        list_of_books = self._search_book_by_author(book_key)
 
         if len(list_of_books) == 0:
             print("\nThere are no matching books. :(\n")
@@ -148,7 +169,10 @@ class Inventory:
             try:
                 option = int(input(self.message_obj.lent_message))
                 if option == 1:
-                    temp_book_list = self._search_book(input("\nEnter book name, author name or isbn to search books: "))
+                    book_key = input("\nEnter book name, author name or isbn to search books: ")
+                    temp_book_list = self._search_book_by_book_name_isbn(book_key)
+                    if len(temp_book_list) < 1:
+                        temp_book_list = self._search_book_by_author(book_key)
                     if len(temp_book_list) < 1:
                         print("There are no books available, please try again.")
                         continue
@@ -236,18 +260,6 @@ class Inventory:
         strr += f"{lent['isbn_number']},{lent['contact_name']},{lent['contact_email']}\n"
         return strr
 
-    def _search_by_split_book_name(self, book_name, key):
-        if key == book_name.lower():
-            return True
-        else:
-            check = False
-            splitted_book_name = book_name.split()
-            for split_book_name in splitted_book_name:
-                if key == split_book_name.lower():
-                    return True
-
-        return False
-
     def _search_lent_book(self, lent_key):
         temp_lent_list = []
         lent_key = lent_key.strip().lower()
@@ -297,11 +309,12 @@ class Inventory:
         while True:
             self._print_lent_list(lent_book_list)
             try:
-                lent_no = int(input("Enter the lent no. from above list to select which book to return: "))
+                lent_no = int(input("Enter the no. from above list to select which book to return: "))
                 if lent_no < 1 or lent_no > lent_list_len:
                     print("Enter a valid lent no. from the list")
                 else:
                     self._add_returned_lent_book(lent_book_list[lent_no-1])
+                    print("\nBook returned successfully. :)\n")
                     break
             except ValueError:
                 print("Please enter a valid lent no. from the list !!!")
@@ -330,29 +343,3 @@ class Inventory:
             for return_lent in self.returned_lent_list:
                 return_lent_csv = self.get_formatted_lent_info(return_lent)
                 returned_file.write(return_lent_csv)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

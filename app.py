@@ -1,4 +1,5 @@
 # ** Main program to run the `Library Management System`
+
 from message import Message
 from output_class import Output
 from input_class import TakeInput
@@ -25,16 +26,18 @@ class LibraryManagementSystem:
                 elif msg == 2:
                     self.inventory.print_all_books()
                 elif msg == 3:
-                    self.inventory.search_book(input("Enter the book title, author or ISBN number: "))
+                    self.inventory.search_book_by_book_name_isbn(input("Enter the book title or ISBN number: "))
                 elif msg == 4:
-                    self.inventory.remove_a_book(input("Enter the book title to remove the book: "))
+                    self.inventory.search_book_by_author(input("Enter the author's name: "))
                 elif msg == 5:
-                    self.inventory.lent_a_book()
+                    self.inventory.remove_a_book(input("Enter the book title, author or isbn to search and remove the book: "))
                 elif msg == 6:
-                    self.inventory.print_all_lent_list()
+                    self.inventory.lent_a_book()
                 elif msg == 7:
-                    self.inventory.return_lent_book()
+                    self.inventory.print_all_lent_list()
                 elif msg == 8:
+                    self.inventory.return_lent_book()
+                elif msg == 9:
                     self.inventory.print_all_returned_lent_list()
                 elif msg == 0:
                     break
